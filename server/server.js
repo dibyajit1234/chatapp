@@ -10,12 +10,22 @@ const io = new Server(server,{
     }
 });
 
-io.on('connection', (socket) => {
+const room = 'group'
+
+io.on('connection',(socket) => {
   console.log('a user connected',socket.id);
 
-  socket.on('joinRoom',(user)=>{
+  socket.on('joinRoom',async(user)=>{
     console.log(user);
+
+    await socket.join(room);
+
+    socket.to(room).emit('roomNotice',user);
     
+  });
+
+  socket.on('chatMessage',(msg)=>{
+    socket.to(room).emit('chatMessage',msg);
   })
 
 
